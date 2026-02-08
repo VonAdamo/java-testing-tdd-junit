@@ -169,35 +169,31 @@ public class BookingSystemTest {
     }
 
     // -------> getAvailableRooms tests <-------
-    @Test
-    void getAvailableRoomsFailsWhenStartTimeIsNull() {
+    @ParameterizedTest(name = "{0} {1}")
+    @MethodSource("getAvailableRoomsInvalidInputs")
+    void getAvailableRoomsFailsWhenStartOrEndIsNull(LocalDateTime startTime, LocalDateTime endTime) {
+
         RoomRepository roomRepository = mock(RoomRepository.class);
         BookingSystem system = new BookingSystem(
                 mock(TimeProvider.class),
                 roomRepository,
                 mock(NotificationService.class)
         );
-        LocalDateTime end = LocalDateTime.now().plusHours(1);
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> system.getAvailableRooms(null, end)
+                () -> system.getAvailableRooms(startTime, endTime)
         );
         assertThat(exception.getMessage())
                 .contains("Måste ange både start- och sluttid");
+        verifyNoInteractions(roomRepository);
     }
 
-    @Test
-    void getAvailableRoomsFailsWhenEndTimeIsNull() {
-        BookingSystem system = new BookingSystem(
-                mock(TimeProvider.class),
-                mock(RoomRepository.class),
-                mock(NotificationService.class)
-        );
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> system.getAvailableRooms(null, LocalDateTime.now().plusHours(1))
+    static Stream<Arguments> getAvailableRoomsInvalidInputs() {
+        LocalDateTime validTime = LocalDateTime.of(2026, 2, 8, 12, 0);
+        return Stream.of(
+                Arguments.of(null, validTime),
+                Arguments.of(validTime, null)
         );
     }
 
