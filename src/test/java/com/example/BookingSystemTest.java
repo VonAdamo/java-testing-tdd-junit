@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-
 public class BookingSystemTest {
 
     // -------> bookRoom tests <-------
@@ -242,6 +241,117 @@ public class BookingSystemTest {
 
         assertThat(result)
                 .containsExactly(room1, room3);
+    }
+
+    // -------> cancelBooking tests <-------
+    @Test
+    void cancelBookingFailsWhenBookingIdIsNull() {
+        BookingSystem system = new BookingSystem(
+                mock(TimeProvider.class),
+                mock(RoomRepository.class),
+                mock(NotificationService.class)
+        );
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> system.cancelBooking(null)
+        );
+        assertThat(exception.getMessage())
+                .contains("Boknings-id kan inte vara null");
+    }
+
+    @Test
+    void cancelBookingReturnsFalseWhenBookingDoesNotExist() {
+        RoomRepository roomRepository = mock(RoomRepository.class);
+        NotificationService notificationService = mock(NotificationService.class);
+
+        Room room1 = mock(Room.class);
+        Room room2 = mock(Room.class);
+
+        when(roomRepository.findAll()).thenReturn(List.of(room1, room2));
+        when(room1.hasBooking("booking1")).thenReturn(false);
+        when(room2.hasBooking("booking2")).thenReturn(false);
+
+        BookingSystem system = new BookingSystem(
+                mock(TimeProvider.class),
+                roomRepository,
+                notificationService
+        );
+
+        boolean result = system.cancelBooking("booking1");
+
+        assertThat(result).isFalse();
+
+        verify(roomRepository, never()).save(any());
+        verifyNoInteractions(notificationService);
+    }
+
+    @Test
+    void cancelBookingsFailsWhenBookingHasAlreadyStarted() {
+
+        RoomRepository roomRepository = mock(RoomRepository.class);
+        NotificationService notificationService = mock(NotificationService.class);
+        TimeProvider timeProvider = mock(TimeProvider.class);
+
+        Room room = mock(Room.class);
+        Booking booking = mock(Booking.class);
+
+        when(roomRepository.findAll()).thenReturn(List.of(room));
+        when(room.hasBooking("booking1")).thenReturn(true);
+        when(room.getBooking("booking1")).thenReturn(booking);
+
+        LocalDateTime now = LocalDateTime.of(2026, 2, 8, 12, 0);
+        when(timeProvider.getCurrentTime()).thenReturn(now);
+        when(booking.getStartTime()).thenReturn(now.minusMinutes(10));
+
+        BookingSystem system = new BookingSystem(
+                timeProvider,
+                roomRepository,
+                notificationService
+        );
+
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> system.cancelBooking("booking1")
+        );
+        assertThat(exception.getMessage())
+                .contains("Kan inte avboka påbörjad eller avslutad bokning");
+
+        verify(room, never()).removeBooking(any());
+        verify(roomRepository, never()).save(any());
+        verifyNoInteractions(notificationService);
+    }
+
+    @Test
+    void cancelBookingReturnsTrueAndRemovesBookingWhenValid() throws NotificationException {
+        RoomRepository roomRepository = mock(RoomRepository.class);
+        NotificationService notificationService = mock(NotificationService.class);
+        TimeProvider timeProvider = mock(TimeProvider.class);
+
+        Room room = mock(Room.class);
+        Booking booking = mock(Booking.class);
+
+        when(roomRepository.findAll()).thenReturn(List.of(room));
+        when(room.hasBooking("booking1")).thenReturn(true);
+        when(room.getBooking("booking1")).thenReturn(booking);
+
+        LocalDateTime now = LocalDateTime.of(2026, 2, 8, 12, 0);
+        when(timeProvider.getCurrentTime()).thenReturn(now);
+        when(booking.getStartTime()).thenReturn(now.plusHours(1));
+
+        BookingSystem system = new BookingSystem(
+                timeProvider,
+                roomRepository,
+                notificationService
+        );
+
+        boolean result = system.cancelBooking("booking1");
+
+        assertThat(result).isTrue();
+
+        verify(room).removeBooking("booking1");
+        verify(roomRepository).save(room);
+        verify(notificationService).sendCancellationConfirmation(booking);
     }
 }
 
