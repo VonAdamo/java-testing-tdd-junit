@@ -17,11 +17,15 @@ public class ShoppingCart {
     }
 
     private final Map<String, Line> cartItem = new HashMap<>();
+    private int percentageDiscount = 0;
 
     public int getTotal() {
         int total = 0;
         for (Line line : cartItem.values()) {
             total += line.price * line.quantity;
+        }
+        if (percentageDiscount > 0) {
+            total = total * (100 - percentageDiscount) / 100;
         }
         return total;
     }
@@ -50,5 +54,9 @@ public class ShoppingCart {
 
     public void removeItem(String milk) {
         cartItem.remove(milk);
+    }
+
+    public void applyPercentageDiscount(int discount) {
+        this.percentageDiscount = discount;
     }
 }

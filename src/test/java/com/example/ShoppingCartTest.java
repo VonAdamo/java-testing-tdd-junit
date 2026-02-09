@@ -86,4 +86,16 @@ public class ShoppingCartTest {
 
         assertThat(cart.getTotal()).isEqualTo(190);
     }
+
+    @Test
+    void applyPercentageDiscountReducesTotal() {
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.addItem("milk", 190);
+        cart.addItem("bread", 250);
+
+        cart.applyPercentageDiscount(10);
+
+        assertThat(cart.getTotal()).isEqualTo(396);
+    }
 }
