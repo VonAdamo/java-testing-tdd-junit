@@ -47,4 +47,8 @@ public class ShoppingCart {
             line.quantity = quantity;
         }
     }
+
+    public void removeItem(String milk) {
+        cartItem.remove(milk);
+    }
 }

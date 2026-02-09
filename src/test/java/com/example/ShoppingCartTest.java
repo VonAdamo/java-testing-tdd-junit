@@ -63,4 +63,16 @@ public class ShoppingCartTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Quantity must be greater than or equal to 0");
     }
+
+    @Test
+    void removeItemRemovesItemAndUpdatesTotal() {
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.addItem("milk", 190);
+        cart.addItem("bread", 250);
+
+        cart.removeItem("milk");
+
+        assertThat(cart.getTotal()).isEqualTo(250);
+    }
 }
