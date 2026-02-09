@@ -125,4 +125,15 @@ public class ShoppingCartTest {
 
         assertThat(cart.getTotal()).isEqualTo(340);
     }
+
+    @Test
+    void applyFixedDiscountThrowsExceptionWhenDiscountAmountIsNegative() {
+        ShoppingCart cart = new ShoppingCart();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cart.applyFixedDiscount(-1)
+        );
+        assertThat(ex.getMessage()).isEqualTo("Discount amount must be greater than or equal to 0");
+    }
 }

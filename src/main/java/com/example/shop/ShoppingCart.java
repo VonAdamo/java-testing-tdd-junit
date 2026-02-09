@@ -68,6 +68,9 @@ public class ShoppingCart {
     }
 
     public void applyFixedDiscount(int discountAmount) {
+        if (discountAmount < 0) {
+            throw new IllegalArgumentException("Discount amount must be greater than or equal to 0");
+        }
         this.fixedDiscount = discountAmount;
     }
 }
