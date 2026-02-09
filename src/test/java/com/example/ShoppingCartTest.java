@@ -2,6 +2,8 @@ package com.example;
 
 import com.example.shop.ShoppingCart;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -100,7 +102,7 @@ public class ShoppingCartTest {
         assertThat(cart.getTotal()).isEqualTo(396);
     }
 
-    @Test
+    /*@Test
     void applyPercentageDiscountThrowsExceptionWhenPercentIsNegative() {
         ShoppingCart cart = new ShoppingCart();
 
@@ -118,6 +120,18 @@ public class ShoppingCartTest {
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
                 () -> cart.applyPercentageDiscount(101)
+        );
+        assertThat(ex.getMessage()).isEqualTo("Discount must be greater than or equal to 0");
+    }*/
+
+    @ParameterizedTest(name = "discount = {0} should throw exception")
+    @ValueSource(ints = { -1, 101 })
+    void applyPercentageDiscountThrowsExceptionWhenDiscountIsOutsideValidRange(int discount) {
+        ShoppingCart cart = new ShoppingCart();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cart.applyPercentageDiscount(discount)
         );
         assertThat(ex.getMessage()).isEqualTo("Discount must be greater than or equal to 0");
     }
