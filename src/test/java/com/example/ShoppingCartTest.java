@@ -8,18 +8,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ShoppingCartTest {
 
     @Test
-    void totalPriceIsZeroForEmptyCart() {
+    void totalIsZeroForEmptyCart() {
         ShoppingCart cart = new ShoppingCart();
 
         assertThat(cart.getTotal()).isZero();
     }
 
     @Test
-    void totalPriceIncreasesWhenAddingItem() {
+    void totalIncreasesWhenAddingItem() {
         ShoppingCart cart = new ShoppingCart();
 
         cart.addItem("milk", 190);
 
         assertThat(cart.getTotal()).isEqualTo(190);
+    }
+
+    @Test
+    void totalCountsSameProductTwiceWhenAddedTwice() {
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.addItem("milk", 190);
+        cart.addItem("milk", 190);
+
+        assertThat(cart.getTotal()).isEqualTo(380);
     }
 }
