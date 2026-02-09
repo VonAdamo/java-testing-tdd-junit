@@ -3,6 +3,7 @@ package com.example.shop;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class ShoppingCart {
 
     private static class Line {
@@ -37,6 +38,10 @@ public class ShoppingCart {
     public void updateQuantity(String productId, int quantity) {
         Line line = cartItem.get(productId);
         if (line == null) return;
-        line.quantity = quantity;
+        if (quantity == 0) {
+            cartItem.remove(productId);
+        } else {
+            line.quantity = quantity;
+        }
     }
 }

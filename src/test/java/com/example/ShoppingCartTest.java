@@ -42,4 +42,14 @@ public class ShoppingCartTest {
 
         assertThat(cart.getTotal()).isEqualTo(570);
     }
+
+    @Test
+    void updateQuantityToZeroRemovesItemFromCart() {
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.addItem("milk", 190);
+        cart.updateQuantity("milk", 0);
+
+        assertThat(cart.getTotal()).isZero();
+    }
 }
