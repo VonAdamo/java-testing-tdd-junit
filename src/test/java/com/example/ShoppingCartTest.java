@@ -13,4 +13,13 @@ public class ShoppingCartTest {
 
         assertThat(cart.getTotal()).isZero();
     }
+
+    @Test
+    void totalPriceIncreasesWhenAddingItem() {
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.addItem("milk", 190);
+
+        assertThat(cart.getTotal()).isEqualTo(190);
+    }
 }

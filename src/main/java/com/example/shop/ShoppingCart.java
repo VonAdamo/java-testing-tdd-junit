@@ -2,7 +2,13 @@ package com.example.shop;
 
 public class ShoppingCart {
 
+    private int total;
+
     public int getTotal() {
-        return 0;
+        return total;
+    }
+
+    public void addItem(String productId, int price) {
+        total += price;
     }
 }
