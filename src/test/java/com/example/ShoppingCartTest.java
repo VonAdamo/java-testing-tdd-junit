@@ -110,4 +110,15 @@ public class ShoppingCartTest {
         );
         assertThat(ex.getMessage()).isEqualTo("Discount must be greater than or equal to 0");
     }
+
+    @Test
+    void applyPercentageDiscountThrowsExceptionWhenDiscountIsGreaterThanZero() {
+        ShoppingCart cart = new ShoppingCart();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cart.applyPercentageDiscount(101)
+        );
+        assertThat(ex.getMessage()).isEqualTo("Discount must be greater than or equal to 0");
+    }
 }
