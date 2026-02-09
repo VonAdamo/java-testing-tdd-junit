@@ -38,6 +38,14 @@ public class ShoppingCartTest {
     }
 
     @Test
+    void addItemThrowsExceptionWhenPriceIsNegative() {
+        ShoppingCart cart = new ShoppingCart();
+
+        assertThatThrownBy(() -> cart.addItem("milk", -1))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void updateQuantityChangesTotalForExistingItem() {
         ShoppingCart cart = new ShoppingCart();
 

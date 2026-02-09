@@ -29,6 +29,9 @@ public class ShoppingCart {
     }
 
     public void addItem(String productId, int price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
         Line line = cartItem.get(productId);
         if (line == null) {
             cartItem.put(productId, new Line(price,1));
@@ -50,8 +53,8 @@ public class ShoppingCart {
         }
     }
 
-    public void removeItem(String milk) {
-        cartItem.remove(milk);
+    public void removeItem(String productId) {
+        cartItem.remove(productId);
     }
 
     public void applyPercentageDiscount(int discount) {
