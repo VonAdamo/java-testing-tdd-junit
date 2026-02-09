@@ -136,4 +136,15 @@ public class ShoppingCartTest {
         );
         assertThat(ex.getMessage()).isEqualTo("Discount amount must be greater than or equal to 0");
     }
+
+    @Test
+    void applyFixedDiscountGreaterThanTotalSetsTotalToZero() {
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.addItem("milk", 190);
+
+        cart.applyFixedDiscount(200);
+
+        assertThat(cart.getTotal()).isZero();
+    }
 }
