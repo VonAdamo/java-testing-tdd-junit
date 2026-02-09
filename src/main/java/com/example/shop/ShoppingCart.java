@@ -18,6 +18,7 @@ public class ShoppingCart {
 
     private final Map<String, Line> cartItem = new HashMap<>();
     private int percentageDiscount = 0;
+    private int fixedDiscount = 0;
 
     public int getTotal() {
         int total = 0;
@@ -27,7 +28,10 @@ public class ShoppingCart {
         if (percentageDiscount > 0) {
             total = total * (100 - percentageDiscount) / 100;
         }
-        return total;
+        if (fixedDiscount > 0) {
+            total -= fixedDiscount;
+        }
+        return Math.max(total, 0);
     }
 
     public void addItem(String productId, int price) {
@@ -61,5 +65,9 @@ public class ShoppingCart {
             throw new IllegalArgumentException("Discount must be greater than or equal to 0");
         }
         this.percentageDiscount = discount;
+    }
+
+    public void applyFixedDiscount(int discountAmount) {
+        this.fixedDiscount = discountAmount;
     }
 }

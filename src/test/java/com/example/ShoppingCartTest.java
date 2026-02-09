@@ -102,28 +102,6 @@ public class ShoppingCartTest {
         assertThat(cart.getTotal()).isEqualTo(396);
     }
 
-    /*@Test
-    void applyPercentageDiscountThrowsExceptionWhenPercentIsNegative() {
-        ShoppingCart cart = new ShoppingCart();
-
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> cart.applyPercentageDiscount(-1)
-        );
-        assertThat(ex.getMessage()).isEqualTo("Discount must be greater than or equal to 0");
-    }
-
-    @Test
-    void applyPercentageDiscountThrowsExceptionWhenDiscountIsGreaterThanZero() {
-        ShoppingCart cart = new ShoppingCart();
-
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> cart.applyPercentageDiscount(101)
-        );
-        assertThat(ex.getMessage()).isEqualTo("Discount must be greater than or equal to 0");
-    }*/
-
     @ParameterizedTest(name = "discount = {0} should throw exception")
     @ValueSource(ints = { -1, 101 })
     void applyPercentageDiscountThrowsExceptionWhenDiscountIsOutsideValidRange(int discount) {
@@ -134,5 +112,17 @@ public class ShoppingCartTest {
                 () -> cart.applyPercentageDiscount(discount)
         );
         assertThat(ex.getMessage()).isEqualTo("Discount must be greater than or equal to 0");
+    }
+
+    @Test
+    void applyFixedDiscountReducesTotal() {
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.addItem("milk", 190);
+        cart.addItem("bread", 250);
+
+        cart.applyFixedDiscount(100);
+
+        assertThat(cart.getTotal()).isEqualTo(340);
     }
 }
