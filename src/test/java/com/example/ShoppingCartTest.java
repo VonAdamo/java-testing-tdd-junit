@@ -75,4 +75,15 @@ public class ShoppingCartTest {
 
         assertThat(cart.getTotal()).isEqualTo(250);
     }
+
+    @Test
+    void removeItemDoesNothingWhenItemDoesNotExist() {
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.addItem("milk", 190);
+
+        cart.removeItem("bread");
+
+        assertThat(cart.getTotal()).isEqualTo(190);
+    }
 }
