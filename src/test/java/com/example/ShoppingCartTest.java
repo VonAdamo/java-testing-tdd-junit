@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ShoppingCartTest {
 
@@ -97,5 +98,16 @@ public class ShoppingCartTest {
         cart.applyPercentageDiscount(10);
 
         assertThat(cart.getTotal()).isEqualTo(396);
+    }
+
+    @Test
+    void applyPercentageDiscountThrowsExceptionWhenPercentIsNegative() {
+        ShoppingCart cart = new ShoppingCart();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cart.applyPercentageDiscount(-1)
+        );
+        assertThat(ex.getMessage()).isEqualTo("Discount must be greater than or equal to 0");
     }
 }
