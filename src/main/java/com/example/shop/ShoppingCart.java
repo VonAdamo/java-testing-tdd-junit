@@ -36,6 +36,9 @@ public class ShoppingCart {
     }
 
     public void updateQuantity(String productId, int quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Quantity must be greater than or equal to 0");
+        }
         Line line = cartItem.get(productId);
         if (line == null) return;
         if (quantity == 0) {

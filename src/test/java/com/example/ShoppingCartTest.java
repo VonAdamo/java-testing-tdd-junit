@@ -4,6 +4,7 @@ import com.example.shop.ShoppingCart;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ShoppingCartTest {
 
@@ -51,5 +52,15 @@ public class ShoppingCartTest {
         cart.updateQuantity("milk", 0);
 
         assertThat(cart.getTotal()).isZero();
+    }
+
+    @Test
+    void updateQuantityThrowsExceptionWhenQuantityIsNegative() {
+        ShoppingCart cart = new ShoppingCart();
+        cart.addItem("milk", 190);
+
+        assertThatThrownBy(() -> cart.updateQuantity("milk", -1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Quantity must be greater than or equal to 0");
     }
 }
